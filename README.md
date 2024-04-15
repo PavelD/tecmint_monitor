@@ -4,7 +4,7 @@ usage in Linux.
 
 # USAGE
 
-Script execution without parameter prints system healt infomration.
+Script execution without parameter prints system health infomration.
 
 ```
 $ bash tecmin_monitor.sh 
