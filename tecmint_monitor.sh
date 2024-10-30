@@ -50,11 +50,7 @@ GetFileContentSanitized()
 {
     return tr "\n" ' ' < "$1"
 }
-GetVersionFromFile()
-{
-    VERSION=$(GetFileContentSanitized $1 | sed s/.*VERSION.*=\ // )
-}
-remove_files()
+removeFiles()
 {
     # Remove Temporary Files
     rm /tmp/who /tmp/ramcache /tmp/diskusage
@@ -137,7 +133,7 @@ echo -n "\"load\":$(echo $loadaverage | jq -R -c 'split(", ")'),"
 echo -n "\"uptime\":$(echo $tecuptime | jq -R '.')"
 echo -n "}"
 echo
-remove_files
+removeFiles
 exit
 }
 fi
@@ -201,7 +197,7 @@ echo -e '\E[32m'"System Uptime Days/(HH:MM) :" "$tecreset" "$tecuptime"
 
 # Unset Variables
 unset tecreset os architecture kernelrelease internalip externalip nameserver loadaverage
-remove_files
+removeFiles
 }
 fi
 shift $(($OPTIND -1))
