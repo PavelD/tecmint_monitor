@@ -46,9 +46,13 @@ exit
 fi
 
 #functions
+GetFileContentSanitized()
+{
+    return tr "\n" ' ' < "$1"
+}
 GetVersionFromFile()
 {
-    VERSION=$(cat $1 | tr "\n" ' ' | sed s/.*VERSION.*=\ // )
+    VERSION=$(GetFileContentSanitized $1 | sed s/.*VERSION.*=\ // )
 }
 remove_files()
 {
@@ -69,7 +73,7 @@ if [[ $USEDIG == "1" ]]; then
 else
     externalip=$(curl -s ipecho.net/plain;echo)
 fi
-nameservers=$(cat /etc/resolv.conf | grep -v ^\# | awk '{print $2}')
+nameservers=$(grep -v ^\# /etc/resolv.conf | awk '{print $2}')
 loadaverage=$((top -n 1 -b 2>/dev/null || (echo q | top)) | grep -i "load average:" | awk -F'average:' '{print $2}'| awk '{print $1" "$2" "$3}')
 tecuptime=$(uptime | awk '{print $3,$4}' | cut -f1 -d,)
 OS=$(uname -s)
@@ -87,22 +91,22 @@ elif [ "${OS}" = "Linux" ] ; then
     REV=""
     if [ -f /etc/redhat-release ] ; then
         DIST='RedHat'
-        PSUEDONAME="$(cat /etc/redhat-release | sed s/.*\(// | sed s/\)//) "
-        REV="$(cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//) "
+        PSUEDONAME="$(sed s/.*\(// /etc/redhat-release | sed s/\)//) "
+        REV="$(sed s/.*release\ // /etc/redhat-release | sed s/\ .*//) "
     elif [ -f /etc/SuSE-release ] ; then
-        DIST=$(cat /etc/SuSE-release | tr "\n" ' '| sed s/VERSION.*//)
-        REV=$(cat /etc/SuSE-release | tr "\n" ' ' | sed s/.*=\ //)
+        DIST=$(GetFileContentSanitized /etc/SuSE-release | sed s/VERSION.*//)
+        REV=$(GetFileContentSanitized /etc/SuSE-release | sed s/.*=\ //)
     elif [ -f /etc/mandrake-release ] ; then
         DIST='Mandrake'
-        PSUEDONAME="$(cat /etc/mandrake-release | sed s/.*\(// | sed s/\)//) "
-        REV="$(cat /etc/mandrake-release | sed s/.*release\ // | sed s/\ .*//) "
+        PSUEDONAME="$(sed s/.*\(// /etc/mandrake-release | sed s/\)//) "
+        REV="$(sed s/.*release\ // /etc/mandrake-release | sed s/\ .*//) "
     elif [ -f /etc/os-release ]; then
         DIST=$(awk -F "PRETTY_NAME=" '{print $2}' /etc/os-release | tr -d '\n"')
     elif [ -f /etc/debian_version ] ; then
         DIST="Debian $(cat /etc/debian_version)"
     fi
     if [ -f /etc/UnitedLinux-release ] ; then
-        DIST="${DIST}[$(cat /etc/UnitedLinux-release | tr "\n" ' ' | sed s/VERSION.*//)]"
+        DIST="${DIST}[$(GetFileContentSanitized /etc/UnitedLinux-release | sed s/VERSION.*//)]"
     fi
     OSSTR="${OS} ${DIST} ${REV}(${PSUEDONAME}${KERNEL} ${MACH})"
 fi
@@ -124,10 +128,10 @@ echo -n "\"ip_internal\":$(echo $internalip | jq -R -c 'split(" ")'),"
 echo -n "\"ip_external\":$(echo $externalip | jq -R -c 'split(" ")'),"
 echo -n "\"name_servers\":$(echo $nameservers | jq -R -c 'split(" ")'),"
 if [[ $SKIPWHO != "1" ]];then
-    echo -n "\"logged_in_users\":$(cat /tmp/who | tr "()" "  " | sed 's/  \+/  /g' | sed 's/ $//g' | jq -R -c 'split("  ")' | jq  -s -c '.'),"
+    echo -n "\"logged_in_users\":$(tr "()" "  " < /tmp/who | sed 's/  \+/  /g' | sed 's/ $//g' | jq -R -c 'split("  ")' | jq  -s -c '.'),"
 fi
-echo -n "\"memory\":$(cat /tmp/ramcache | grep "Mem" | awk '{$1="";print $0}' | xargs | jq -R -c 'split(" ")'),"
-echo -n "\"swap\":$(cat /tmp/ramcache | grep "Swap" | awk '{$1="";print $0}' | xargs | jq -R -c 'split(" ")'),"
+echo -n "\"memory\":$(grep "Mem" /tmp/ramcache | awk '{$1="";print $0}' | xargs | jq -R -c 'split(" ")'),"
+echo -n "\"swap\":$(grep "Swap" /tmp/ramcache | awk '{$1="";print $0}' | xargs | jq -R -c 'split(" ")'),"
 echo -n "\"disk\":$(tail -n +2 /tmp/diskusage | sed 's/ \+/ /g' | jq -R -c 'split(" ")' | jq  -s -c '.'),"
 echo -n "\"load\":$(echo $loadaverage | jq -R -c 'split(", ")'),"
 echo -n "\"uptime\":$(echo $tecuptime | jq -R '.')"
@@ -181,9 +185,9 @@ fi
 
 # Check RAM and SWAP Usages
 echo -e '\E[32m'"Ram Usages :" $tecreset
-cat /tmp/ramcache | grep -v "Swap"
+grep -v "Swap" /tmp/ramcache
 echo -e '\E[32m'"Swap Usages :" $tecreset
-cat /tmp/ramcache | grep -v "Mem" | awk -F'shared' '{print $1}'
+grep -v "Mem" /tmp/ramcache | awk -F'shared' '{print $1}'
 
 # Check Disk Usages
 echo -e '\E[32m'"Disk Usages :" $tecreset
