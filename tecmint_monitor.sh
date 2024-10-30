@@ -31,7 +31,7 @@ then
 {
 wd=$(pwd)
 basename "$(test -L "$0" && readlink "$0" || echo "$0")" > /tmp/scriptname
-scriptname=$(echo -e -n $wd/ && cat /tmp/scriptname)
+scriptname=$(echo -e -n "$wd"/ && cat /tmp/scriptname)
 su -c "cp $scriptname /usr/bin/monitor" root && echo "Congratulations! Script Installed, now run monitor Command" || echo "Installation failed"
 exit
 }
@@ -200,4 +200,6 @@ unset tecreset os architecture kernelrelease internalip externalip nameserver lo
 removeFiles
 }
 fi
-shift $(($OPTIND -1))
+if (( OPTIND > 1 )); then
+    shift $((OPTIND - 1))
+fi
