@@ -114,23 +114,23 @@ if [[ $opt == "j" ]]
 then
 {
 echo -n "{"
-echo -n "\"internet\":$(echo $internet | jq -R '.'),"
-echo -n "\"os_type\":$(echo $os | jq -R '.'),"
-echo -n "\"os_version\":$(echo $OSSTR | jq -R '.'),"
-echo -n "\"architecture\":$(echo $architecture | jq -R '.'),"
-echo -n "\"kernel_release\":$(echo $kernelrelease | jq -R '.'),"
-echo -n "\"hostname\":$(echo $hostname | jq -R '.'),"
-echo -n "\"ip_internal\":$(echo $internalip | jq -R -c 'split(" ")'),"
-echo -n "\"ip_external\":$(echo $externalip | jq -R -c 'split(" ")'),"
-echo -n "\"name_servers\":$(echo $nameservers | jq -R -c 'split(" ")'),"
-if [[ $SKIPWHO != "1" ]];then
+echo -n "\"internet\":$(echo "$internet" | jq -R '.'),"
+echo -n "\"os_type\":$(echo "$os" | jq -R '.'),"
+echo -n "\"os_version\":$(echo "$OSSTR" | jq -R '.'),"
+echo -n "\"architecture\":$(echo "$architecture" | jq -R '.'),"
+echo -n "\"kernel_release\":$(echo "$kernelrelease" | jq -R '.'),"
+echo -n "\"hostname\":$(echo "$hostname" | jq -R '.'),"
+echo -n "\"ip_internal\":$(echo "$internalip" | jq -R -c 'split(" ")'),"
+echo -n "\"ip_external\":$(echo "$externalip" | jq -R -c 'split(" ")'),"
+echo -n "\"name_servers\":$(echo "$nameservers" | jq -R -c 'split(" ")'),"
+if [[ "$SKIPWHO" != "1" ]];then
     echo -n "\"logged_in_users\":$(tr "()" "  " < /tmp/who | sed 's/  \+/  /g' | sed 's/ $//g' | jq -R -c 'split("  ")' | jq  -s -c '.'),"
 fi
 echo -n "\"memory\":$(grep "Mem" /tmp/ramcache | awk '{$1="";print $0}' | xargs | jq -R -c 'split(" ")'),"
 echo -n "\"swap\":$(grep "Swap" /tmp/ramcache | awk '{$1="";print $0}' | xargs | jq -R -c 'split(" ")'),"
 echo -n "\"disk\":$(tail -n +2 /tmp/diskusage | sed 's/ \+/ /g' | jq -R -c 'split(" ")' | jq  -s -c '.'),"
-echo -n "\"load\":$(echo $loadaverage | jq -R -c 'split(", ")'),"
-echo -n "\"uptime\":$(echo $tecuptime | jq -R '.')"
+echo -n "\"load\":$(echo "$loadaverage" | jq -R -c 'split(", ")'),"
+echo -n "\"uptime\":$(echo "$tecuptime" | jq -R '.')"
 echo -n "}"
 echo
 removeFiles
