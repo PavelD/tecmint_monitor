@@ -151,53 +151,53 @@ then
 tecreset=$(tput sgr0 2>/dev/null || echo -e '\E[0m')
 
 # Check if connected to Internet or not
-echo -e '\E[32m'"Internet :" $tecreset $internet
+echo -e '\E[32m'"Internet :" "$tecreset" "$internet"
 
 # Check OS Type
-echo -e '\E[32m'"Operating System Type :" $tecreset $os
+echo -e '\E[32m'"Operating System Type :" "$tecreset" "$os"
 
 #cat /etc/os-release | grep 'NAME\|VERSION' | grep -v 'VERSION_ID' | grep -v 'PRETTY_NAME' > /tmp/osrelease
 #echo -n -e '\E[32m'"OS Name :" $tecreset  && cat /tmp/osrelease | grep -v "VERSION" | grep -v CPE_NAME | cut -f2 -d\"
 #echo -n -e '\E[32m'"OS Version :" $tecreset && cat /tmp/osrelease | grep -v "NAME" | grep -v CT_VERSION | cut -f2 -d\"
-echo -e '\E[32m'"OS Version :" $tecreset $OSSTR
+echo -e '\E[32m'"OS Version :" "$tecreset" "$OSSTR"
 # Check Architecture
-echo -e '\E[32m'"Architecture :" $tecreset $architecture
+echo -e '\E[32m'"Architecture :" "$tecreset" "$architecture"
 
 # Check Kernel Release
-echo -e '\E[32m'"Kernel Release :" $tecreset $kernelrelease
+echo -e '\E[32m'"Kernel Release :" "$tecreset" "$kernelrelease"
 
 # Check hostname
-echo -e '\E[32m'"Hostname :" $tecreset $hostname
+echo -e '\E[32m'"Hostname :" "$tecreset" "$hostname"
 
 # Check Internal IP
-echo -e '\E[32m'"Internal IP :" $tecreset $internalip
+echo -e '\E[32m'"Internal IP :" "$tecreset" "$internalip"
 
 # Check External IP
-echo -e '\E[32m'"External IP : $tecreset "$externalip
+echo -e '\E[32m'"External IP :" "$tecreset" "$externalip"
 
 # Check DNS
-echo -e '\E[32m'"Name Servers :" $tecreset $nameservers
+echo -e '\E[32m'"Name Servers :" "$tecreset" "$nameservers"
 
 if [[ $SKIPWHO != "1" ]];then
     # Check Logged In Users
-    echo -e '\E[32m'"Logged In users :" $tecreset && cat /tmp/who
+    echo -e '\E[32m'"Logged In users :" "$tecreset" && cat /tmp/who
 fi
 
 # Check RAM and SWAP Usages
-echo -e '\E[32m'"Ram Usages :" $tecreset
+echo -e '\E[32m'"Ram Usages :" "$tecreset"
 grep -v "Swap" /tmp/ramcache
-echo -e '\E[32m'"Swap Usages :" $tecreset
+echo -e '\E[32m'"Swap Usages :" "$tecreset"
 grep -v "Mem" /tmp/ramcache | awk -F'shared' '{print $1}'
 
 # Check Disk Usages
-echo -e '\E[32m'"Disk Usages :" $tecreset
+echo -e '\E[32m'"Disk Usages :" "$tecreset"
 cat /tmp/diskusage
 
 # Check Load Average
-echo -e '\E[32m'"Load Average :" $tecreset $loadaverage
+echo -e '\E[32m'"Load Average :" "$tecreset" "$loadaverage"
 
 # Check System Uptime
-echo -e '\E[32m'"System Uptime Days/(HH:MM) :" $tecreset $tecuptime
+echo -e '\E[32m'"System Uptime Days/(HH:MM) :" "$tecreset" "$tecuptime"
 
 # Unset Variables
 unset tecreset os architecture kernelrelease internalip externalip nameserver loadaverage
