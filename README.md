@@ -38,6 +38,6 @@ Please report to us on [tecmint website](http://www.tecmint.com/linux-server-hea
 
 Released under APACHE v2 (please check the LICENSE file for further informations)
 
-Originally published on http://www.tecmint.com
+Originally published on <http://www.tecmint.com>
 
 The original author allowed to upload the script to Github and further develop it.
